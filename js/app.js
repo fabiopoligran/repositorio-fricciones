@@ -1,12 +1,18 @@
-// ── RENDER ──
 const list = document.getElementById('friction-list');
 const emptyState = document.getElementById('empty-state');
 const resultsCount = document.getElementById('results-count');
+const activeFilters = document.getElementById('active-filters');
+const clearFiltersBtn = document.getElementById('clear-filters');
+const sortNote = document.getElementById('sort-note');
 
-function severidadClass(s) {
+const impactRank = { Alta: 3, Media: 2, Baja: 1 };
+const statusRank = { 'Sin iniciar': 1, 'En curso': 2, Resuelta: 3 };
+const impactLabels = { Alta: 'Alto', Media: 'Medio', Baja: 'Bajo' };
+
+function nivelImpactoClass(s) {
   return s === 'Alta' ? 'error' : s === 'Media' ? 'warning' : 'success';
 }
-function severidadIcon(s) {
+function nivelImpactoIcon(s) {
   return s === 'Alta' ? 'error' : s === 'Media' ? 'warning' : 'check_circle';
 }
 function estadoClass(e) {
@@ -22,11 +28,15 @@ function estadoIcon(e) {
 function esfuerzoClass(e) {
   return e === 'Alto' ? 'error' : e === 'Medio' ? 'warning' : 'success';
 }
-function momentoClass() { return 'brand'; }
-function momentoIcon() { return 'route'; }
+function compareById(a, b) {
+  return Number(a.id.replace('F-', '')) - Number(b.id.replace('F-', ''));
+}
+function shortPlatform(platform) {
+  return platform.length > 35 ? platform.substring(0, 35) + '...' : platform;
+}
 
 function buildCard(f) {
-  const card = document.createElement('div');
+  const card = document.createElement('article');
   card.className = 'friction-card';
   card.setAttribute('role', 'listitem');
   card.dataset.id = f.id;
@@ -35,119 +45,135 @@ function buildCard(f) {
   card.dataset.estado = f.estado;
   card.dataset.search = (f.nombre + ' ' + f.plataforma + ' ' + f.momento + ' ' + f.descripcion + ' ' + f.propietario).toLowerCase();
 
-  card.innerHTML = `
-    <div class="friction-header" tabindex="0" role="button" aria-expanded="false">
-      <div class="severity-bar ${f.severidad.toLowerCase()}" aria-hidden="true"></div>
-      <div class="friction-meta">
-        <div class="friction-top">
-          <span class="friction-id">${f.id}</span>
-          <span class="friction-name">${f.nombre}</span>
-        </div>
-        <div class="friction-tags">
-          <span class="badge ${severidadClass(f.severidad)}">
-            <span class="material-icons-round">${severidadIcon(f.severidad)}</span>
-            ${f.severidad}
-          </span>
-          <span class="badge ${momentoClass()}">
-            <span class="material-icons-round">${momentoIcon()}</span>
-            ${f.momento}
-          </span>
-          <span class="badge neutral">
-            <span class="material-icons-round">devices</span>
-            ${f.plataforma.length > 35 ? f.plataforma.substring(0,35)+'…' : f.plataforma}
-          </span>
-          <span class="badge ${estadoClass(f.estado)}">
-            <span class="material-icons-round">${estadoIcon(f.estado)}</span>
-            ${f.estado}
-          </span>
-        </div>
-      </div>
-      <button class="friction-expand-btn" tabindex="-1" aria-hidden="true">
-        <span class="material-icons-round">expand_more</span>
-      </button>
-    </div>
-    <div class="friction-detail" role="region" aria-label="Detalle de ${f.nombre}">
-      <div class="detail-grid">
-        <div class="detail-section">
-          <div class="detail-label"><span class="material-icons-round">description</span>Descripción</div>
-          <div class="detail-value">${f.descripcion}</div>
-        </div>
-        <div class="detail-section">
-          <div class="detail-label"><span class="material-icons-round">person_alert</span>Impacto en el estudiante</div>
-          <div class="detail-value">${f.impacto}</div>
-        </div>
-        <div class="detail-section">
-          <div class="detail-label"><span class="material-icons-round">lightbulb</span>Alternativa de solución</div>
-          <div class="detail-value">${f.solucion}</div>
-        </div>
-        <div class="detail-section">
-          <div class="detail-label"><span class="material-icons-round">source</span>Fuentes que la confirman</div>
-          <div class="sources-list">
-            ${f.fuentes.map(s => `<div class="source-item"><span class="material-icons-round">check</span>${s}</div>`).join('')}
-          </div>
-        </div>
-      </div>
-      <div class="detail-footer">
-        <div class="footer-item">
-          <span class="footer-item-label">Propietario</span>
-          <span class="badge neutral"><span class="material-icons-round" style="font-size:12px">manage_accounts</span>${f.propietario}</span>
-        </div>
-        <div class="footer-item">
-          <span class="footer-item-label">Esfuerzo</span>
-          <span class="badge ${esfuerzoClass(f.esfuerzo)}">${f.esfuerzo}</span>
-        </div>
-        <div class="footer-item" style="margin-left:auto;">
-          <span class="footer-item-label">Estado</span>
-          <button class="estado-btn active-${f.estado === 'Sin iniciar' ? 'sin' : f.estado === 'En curso' ? 'curso' : 'resuelta'}" data-friction-id="${f.id}" aria-label="Cambiar estado de ${f.nombre}">
-            <span class="material-icons-round" style="font-size:14px">${estadoIcon(f.estado)}</span>
-            ${f.estado}
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
+  const sources = f.fuentes.map(function(s) {
+    return '<div class="source-item"><span class="material-icons-round">check</span>' + s + '</div>';
+  }).join('');
 
-  // Toggle
+  card.innerHTML = '' +
+    '<div class="friction-header" tabindex="0" role="button" aria-expanded="false">' +
+      '<div class="severity-bar ' + f.severidad.toLowerCase() + '" aria-hidden="true"></div>' +
+      '<div class="friction-meta">' +
+        '<div class="friction-top">' +
+          '<h3 class="friction-name">' + f.nombre + '</h3>' +
+          '<span class="friction-id">' + f.id + '</span>' +
+        '</div>' +
+        '<div class="friction-tags">' +
+          '<span class="badge ' + nivelImpactoClass(f.severidad) + '">' +
+            '<span class="material-icons-round">' + nivelImpactoIcon(f.severidad) + '</span>' +
+            'Impacto ' + impactLabels[f.severidad].toLowerCase() +
+          '</span>' +
+          '<span class="badge brand"><span class="material-icons-round">route</span>' + f.momento + '</span>' +
+          '<span class="badge neutral"><span class="material-icons-round">devices</span>' + shortPlatform(f.plataforma) + '</span>' +
+          '<span class="badge ' + estadoClass(f.estado) + ' status-badge">' +
+            '<span class="material-icons-round">' + estadoIcon(f.estado) + '</span>' +
+            'Solución: ' + f.estado +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+      '<button class="friction-expand-btn" tabindex="-1" aria-hidden="true"><span class="material-icons-round">expand_more</span></button>' +
+    '</div>' +
+    '<div class="friction-detail" role="region" aria-label="Detalle de ' + f.nombre + '">' +
+      '<div class="detail-grid">' +
+        '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">description</span>Qué ocurre</div><div class="detail-value">' + f.descripcion + '</div></div>' +
+        '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">person_alert</span>Impacto en el estudiante</div><div class="detail-value">' + f.impacto + '</div></div>' +
+        '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">lightbulb</span>Alternativa de solución</div><div class="detail-value">' + f.solucion + '</div></div>' +
+        '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">source</span>Evidencia disponible</div><div class="sources-list">' + sources + '</div></div>' +
+      '</div>' +
+      '<div class="detail-footer">' +
+        '<div class="footer-item"><span class="footer-item-label">Responsable</span><span class="badge neutral"><span class="material-icons-round" style="font-size:12px">manage_accounts</span>' + f.propietario + '</span></div>' +
+        '<div class="footer-item"><span class="footer-item-label">Esfuerzo estimado</span><span class="badge ' + esfuerzoClass(f.esfuerzo) + '">' + f.esfuerzo + '</span></div>' +
+        '<div class="footer-item status-control"><span class="footer-item-label">Avance de solución</span>' +
+          '<button class="estado-btn active-' + (f.estado === 'Sin iniciar' ? 'sin' : f.estado === 'En curso' ? 'curso' : 'resuelta') + '" data-friction-id="' + f.id + '" aria-label="Cambiar avance de solución de ' + f.nombre + '">' +
+            '<span class="material-icons-round" style="font-size:14px">' + estadoIcon(f.estado) + '</span>' + f.estado +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
   const header = card.querySelector('.friction-header');
-  header.addEventListener('click', () => toggleCard(card));
-  header.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard(card); } });
+  header.addEventListener('click', function() { toggleCard(card); });
+  header.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleCard(card);
+    }
+  });
 
-  // Estado cycle
   const estadoBtn = card.querySelector('.estado-btn');
   const estados = ['Sin iniciar', 'En curso', 'Resuelta'];
-  estadoBtn.addEventListener('click', (e) => {
+  estadoBtn.addEventListener('click', function(e) {
     e.stopPropagation();
-    const fid = estadoBtn.dataset.frictionId;
-    const fr = frictions.find(x => x.id === fid);
+    const fr = frictions.find(function(x) { return x.id === estadoBtn.dataset.frictionId; });
     const idx = estados.indexOf(fr.estado);
     fr.estado = estados[(idx + 1) % estados.length];
-    card.dataset.estado = fr.estado;
-    estadoBtn.className = `estado-btn active-${fr.estado === 'Sin iniciar' ? 'sin' : fr.estado === 'En curso' ? 'curso' : 'resuelta'}`;
-    estadoBtn.innerHTML = `<span class="material-icons-round" style="font-size:14px">${estadoIcon(fr.estado)}</span>${fr.estado}`;
-    // Update badge in header
-    const badges = card.querySelectorAll('.friction-tags .badge');
-    badges.forEach(b => {
-      if (['Sin iniciar','En curso','Resuelta'].some(s => b.textContent.trim().includes(s))) {
-        b.className = `badge ${estadoClass(fr.estado)}`;
-        b.innerHTML = `<span class="material-icons-round">${estadoIcon(fr.estado)}</span>${fr.estado}`;
-      }
-    });
+    updateCardStatus(card, fr, estadoBtn);
     updateStats();
+    applyFilters();
   });
 
   return card;
 }
 
-function toggleCard(card) {
-  const isOpen = card.classList.toggle('open');
-  const header = card.querySelector('.friction-header');
-  header.setAttribute('aria-expanded', isOpen);
+function updateCardStatus(card, fr, estadoBtn) {
+  card.dataset.estado = fr.estado;
+  estadoBtn.className = 'estado-btn active-' + (fr.estado === 'Sin iniciar' ? 'sin' : fr.estado === 'En curso' ? 'curso' : 'resuelta');
+  estadoBtn.innerHTML = '<span class="material-icons-round" style="font-size:14px">' + estadoIcon(fr.estado) + '</span>' + fr.estado;
+  const statusBadge = card.querySelector('.status-badge');
+  statusBadge.className = 'badge ' + estadoClass(fr.estado) + ' status-badge';
+  statusBadge.innerHTML = '<span class="material-icons-round">' + estadoIcon(fr.estado) + '</span>Solución: ' + fr.estado;
 }
 
-// ── RENDER ALL ──
-frictions.forEach(f => list.appendChild(buildCard(f)));
+function toggleCard(card) {
+  const isOpen = card.classList.toggle('open');
+  card.querySelector('.friction-header').setAttribute('aria-expanded', isOpen);
+}
 
-// ── FILTER ──
+function getSortedFrictions() {
+  const sortBy = document.getElementById('sort-by').value;
+  const sorted = frictions.slice();
+  sorted.sort(function(a, b) {
+    if (sortBy === 'impacto') return impactRank[b.severidad] - impactRank[a.severidad] || compareById(a, b);
+    if (sortBy === 'etapa') return a.momento.localeCompare(b.momento, 'es') || compareById(a, b);
+    if (sortBy === 'avance') return statusRank[a.estado] - statusRank[b.estado] || compareById(a, b);
+    return compareById(a, b);
+  });
+  return sorted;
+}
+
+function renderCards() {
+  list.innerHTML = '';
+  getSortedFrictions().forEach(function(f) { list.appendChild(buildCard(f)); });
+}
+
+function updateActiveFilters() {
+  const q = document.getElementById('search').value.trim();
+  const sev = document.getElementById('filter-severidad').value;
+  const mom = document.getElementById('filter-momento').value;
+  const est = document.getElementById('filter-estado').value;
+  const chips = [];
+
+  if (q) chips.push('Búsqueda: "' + q + '"');
+  if (sev) chips.push('Impacto: ' + impactLabels[sev]);
+  if (mom) chips.push('Etapa: ' + mom);
+  if (est) chips.push('Solución: ' + est);
+
+  activeFilters.innerHTML = chips.length
+    ? chips.map(function(chip) { return '<span class="filter-chip">' + chip + '</span>'; }).join('')
+    : '<span class="filter-empty">Sin filtros aplicados</span>';
+
+  clearFiltersBtn.disabled = chips.length === 0;
+}
+
+function updateSortNote() {
+  const labels = {
+    impacto: 'Orden por defecto: impacto alto a bajo.',
+    etapa: 'Orden actual: etapa del recorrido, de la A a la Z.',
+    avance: 'Orden actual: avance de solución.',
+    id: 'Orden actual: código original del diagnóstico.'
+  };
+  sortNote.textContent = labels[document.getElementById('sort-by').value];
+}
+
 function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase();
   const sev = document.getElementById('filter-severidad').value;
@@ -155,7 +181,7 @@ function applyFilters() {
   const est = document.getElementById('filter-estado').value;
 
   let visible = 0;
-  document.querySelectorAll('.friction-card').forEach(card => {
+  document.querySelectorAll('.friction-card').forEach(function(card) {
     const matchQ = !q || card.dataset.search.includes(q);
     const matchS = !sev || card.dataset.severidad === sev;
     const matchM = !mom || card.dataset.momento === mom;
@@ -165,24 +191,52 @@ function applyFilters() {
     if (show) visible++;
   });
 
-  resultsCount.textContent = `${visible} fricción${visible !== 1 ? 'es' : ''}`;
+  resultsCount.textContent = visible + ' fricción' + (visible !== 1 ? 'es' : '');
   emptyState.classList.toggle('visible', visible === 0);
+  updateActiveFilters();
+  updateSortNote();
 }
 
 function updateStats() {
-  const alta = frictions.filter(f => f.severidad === 'Alta').length;
-  const sinIniciar = frictions.filter(f => f.estado === 'Sin iniciar').length;
-  const enCurso = frictions.filter(f => f.estado === 'En curso').length;
+  const alta = frictions.filter(function(f) { return f.severidad === 'Alta'; }).length;
+  const sinIniciar = frictions.filter(function(f) { return f.estado === 'Sin iniciar'; }).length;
+  const enCurso = frictions.filter(function(f) { return f.estado === 'En curso'; }).length;
   document.getElementById('stat-total').textContent = frictions.length;
   document.getElementById('stat-alta').textContent = alta;
   document.getElementById('stat-sin-iniciar').textContent = sinIniciar;
   document.getElementById('stat-en-curso').textContent = enCurso;
 }
 
+function clearFilters() {
+  document.getElementById('search').value = '';
+  document.getElementById('filter-severidad').value = '';
+  document.getElementById('filter-momento').value = '';
+  document.getElementById('filter-estado').value = '';
+  applyFilters();
+}
+
 document.getElementById('search').addEventListener('input', applyFilters);
 document.getElementById('filter-severidad').addEventListener('change', applyFilters);
 document.getElementById('filter-momento').addEventListener('change', applyFilters);
 document.getElementById('filter-estado').addEventListener('change', applyFilters);
+document.getElementById('sort-by').addEventListener('change', function() {
+  renderCards();
+  applyFilters();
+});
+clearFiltersBtn.addEventListener('click', clearFilters);
 
+document.querySelectorAll('[data-quick-filter]').forEach(function(card) {
+  card.addEventListener('click', function() {
+    clearFilters();
+    const quickFilter = card.dataset.quickFilter;
+    if (quickFilter === 'impacto-alto') document.getElementById('filter-severidad').value = 'Alta';
+    if (quickFilter === 'sin-iniciar') document.getElementById('filter-estado').value = 'Sin iniciar';
+    if (quickFilter === 'en-curso') document.getElementById('filter-estado').value = 'En curso';
+    applyFilters();
+    document.getElementById('repository').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+renderCards();
 applyFilters();
 updateStats();
