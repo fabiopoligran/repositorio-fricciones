@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repositorio de Fricciones · Experiencia Digital · Politécnico Grancolombiano</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar" role="banner">
+  <div class="topbar-left">
+    <span class="topbar-logo">Politécnico Grancolombiano</span>
+    <div class="topbar-divider" aria-hidden="true"></div>
+    <span class="topbar-title">Repositorio de Fricciones · Experiencia Digital</span>
+  </div>
+  <span class="topbar-badge">V 1.0 · Jun 2026</span>
+</header>
+
+<main class="page" role="main">
+
+  <!-- STATS -->
+  <section class="stats-row" aria-label="Resumen">
+    <div class="stat-card">
+      <div class="stat-icon brand"><span class="material-icons-round">inventory_2</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-total">15</div>
+        <div class="stat-label">Fricciones identificadas</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon error"><span class="material-icons-round">priority_high</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-alta">11</div>
+        <div class="stat-label">Severidad alta</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon warning"><span class="material-icons-round">pending</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-sin-iniciar">13</div>
+        <div class="stat-label">Sin iniciar</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success"><span class="material-icons-round">task_alt</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-en-curso">2</div>
+        <div class="stat-label">En curso</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar" role="search">
+    <div class="search-wrap">
+      <span class="material-icons-round" aria-hidden="true">search</span>
+      <input
+        type="search"
+        class="search-input"
+        id="search"
+        placeholder="Buscar fricción, plataforma, momento..."
+        aria-label="Buscar fricciones"
+      >
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Severidad</span>
+      <select class="filter-select" id="filter-severidad" aria-label="Filtrar por severidad">
+        <option value="">Todas</option>
+        <option value="Alta">Alta</option>
+        <option value="Media">Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Momento</span>
+      <select class="filter-select" id="filter-momento" aria-label="Filtrar por momento">
+        <option value="">Todos</option>
+        <option value="Inscripción de asignaturas">Inscripción</option>
+        <option value="Pago de matrícula">Pago</option>
+        <option value="Gestión de certificados">Certificados</option>
+        <option value="Atención y servicio">Servicio</option>
+        <option value="Experiencia de aprendizaje virtual">Aprendizaje virtual</option>
+        <option value="Proceso de desarrollo">Proceso</option>
+        <option value="Transversal">Transversal</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Estado</span>
+      <select class="filter-select" id="filter-estado" aria-label="Filtrar por estado">
+        <option value="">Todos</option>
+        <option value="Sin iniciar">Sin iniciar</option>
+        <option value="En curso">En curso</option>
+        <option value="Resuelta">Resuelta</option>
+      </select>
+    </div>
+    <span class="results-count" id="results-count" aria-live="polite"></span>
+  </div>
+
+  <!-- LIST -->
+  <div class="friction-list" id="friction-list" role="list" aria-label="Listado de fricciones"></div>
+
+  <!-- EMPTY -->
+  <div class="empty-state" id="empty-state" role="status">
+    <div class="empty-icon"><span class="material-icons-round" style="font-size:48px">search_off</span></div>
+    <div class="empty-title">Sin resultados</div>
+    <div class="empty-desc">Intenta con otros filtros o términos de búsqueda</div>
+  </div>
+
+  <!-- VERSION -->
+  <div class="version-bar" role="note">
+    <span class="material-icons-round">info</span>
+    Versión 1.0 · Junio 2026 · 15 fricciones · Fuentes: 8 encuestas (21.829 respuestas) + 1.529 reseñas Google Maps + 7 entrevistas con stakeholders
+  </div>
+
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
