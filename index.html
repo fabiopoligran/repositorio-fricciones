@@ -4,118 +4,184 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Repositorio de Fricciones · Experiencia Digital · Politécnico Grancolombiano</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<!-- TOPBAR -->
-<header class="topbar" role="banner">
-  <div class="topbar-left">
-    <span class="topbar-logo">Politécnico Grancolombiano</span>
-    <div class="topbar-divider" aria-hidden="true"></div>
-    <span class="topbar-title">Repositorio de Fricciones · Experiencia Digital</span>
+<header class="site-header" role="banner">
+  <div class="institution-bar">
+    <div class="institution-name">Politécnico Grancolombiano</div>
+    <div class="institution-unit">Dirección de Experiencia e Inclusión · Vicerrectoría del Estudiante</div>
   </div>
-  <span class="topbar-badge">V 1.0 · Jun 2026</span>
+  <nav class="main-nav" aria-label="Navegación principal">
+    <a class="nav-brand" href="#top" aria-label="Repositorio de Fricciones">
+      <span class="brand-mark" aria-hidden="true">RF</span>
+      <span>
+        <strong>Repositorio de Fricciones</strong>
+        <small>Experiencia Digital</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="#about">Qué es</a>
+      <a href="#repository">Explorar</a>
+    </div>
+    <span class="version-pill">V 1.0 · Jun 2026</span>
+  </nav>
 </header>
 
-<main class="page" role="main">
+<main class="page" id="top" role="main">
+  <section class="intro-section" id="about" aria-labelledby="page-title">
+    <div class="intro-copy">
+      <p class="eyebrow">Sistema Institucional de Gestión de la Experiencia Digital</p>
+      <h1 id="page-title">Fricciones que afectan la experiencia digital del estudiante</h1>
+      <p>
+        Este repositorio reúne hallazgos del diagnóstico institucional para priorizar mejoras,
+        hacer seguimiento a las soluciones y mantener una lectura común entre equipos.
+      </p>
+    </div>
+    <div class="about-panel" aria-label="Cómo usar este repositorio">
+      <div>
+        <span class="material-icons-round" aria-hidden="true">info</span>
+        <strong>Cómo usarlo</strong>
+      </div>
+      <p>
+        Filtra por nivel de impacto, etapa del recorrido o avance de solución. Abre cada fricción
+        para ver evidencia, impacto, alternativa de solución, esfuerzo y equipo responsable.
+      </p>
+    </div>
+  </section>
 
-  <!-- STATS -->
-  <section class="stats-row" aria-label="Resumen">
-    <div class="stat-card">
+  <section class="stats-row" aria-label="Resumen y filtros rápidos">
+    <button class="stat-card" type="button" data-quick-filter="all" aria-label="Ver todas las fricciones">
       <div class="stat-icon brand"><span class="material-icons-round">inventory_2</span></div>
       <div class="stat-info">
         <div class="stat-value" id="stat-total">15</div>
         <div class="stat-label">Fricciones identificadas</div>
+        <div class="stat-action">Ver todo</div>
       </div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card" type="button" data-quick-filter="impacto-alto" aria-label="Filtrar fricciones de impacto alto">
       <div class="stat-icon error"><span class="material-icons-round">priority_high</span></div>
       <div class="stat-info">
         <div class="stat-value" id="stat-alta">11</div>
-        <div class="stat-label">Severidad alta</div>
+        <div class="stat-label">Impacto alto</div>
+        <div class="stat-action">Filtrar</div>
       </div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card" type="button" data-quick-filter="sin-iniciar" aria-label="Filtrar fricciones sin trabajo iniciado">
       <div class="stat-icon warning"><span class="material-icons-round">pending</span></div>
       <div class="stat-info">
         <div class="stat-value" id="stat-sin-iniciar">13</div>
-        <div class="stat-label">Sin iniciar</div>
+        <div class="stat-label">Solución sin iniciar</div>
+        <div class="stat-action">Filtrar</div>
       </div>
-    </div>
-    <div class="stat-card">
+    </button>
+    <button class="stat-card" type="button" data-quick-filter="en-curso" aria-label="Filtrar fricciones con solución en curso">
       <div class="stat-icon success"><span class="material-icons-round">task_alt</span></div>
       <div class="stat-info">
         <div class="stat-value" id="stat-en-curso">2</div>
-        <div class="stat-label">En curso</div>
+        <div class="stat-label">Solución en curso</div>
+        <div class="stat-action">Filtrar</div>
       </div>
+    </button>
+  </section>
+
+  <section class="repository-section" id="repository" aria-label="Explorar fricciones">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Explorar repositorio</p>
+        <h2>Fricciones documentadas</h2>
+      </div>
+      <span class="results-count" id="results-count" aria-live="polite"></span>
+    </div>
+
+    <div class="controls-panel">
+      <div class="search-wrap">
+        <span class="material-icons-round" aria-hidden="true">search</span>
+        <input
+          type="search"
+          class="search-input"
+          id="search"
+          placeholder="Buscar por fricción, plataforma, etapa o responsable"
+          aria-label="Buscar fricciones"
+        >
+      </div>
+
+      <div class="controls-grid">
+        <fieldset class="control-group">
+          <legend>Filtrar por:</legend>
+          <label>
+            Nivel de impacto
+            <select class="filter-select" id="filter-severidad" aria-label="Filtrar por nivel de impacto">
+              <option value="">Todos</option>
+              <option value="Alta">Alto</option>
+              <option value="Media">Medio</option>
+              <option value="Baja">Bajo</option>
+            </select>
+          </label>
+          <label>
+            Etapa del recorrido
+            <select class="filter-select" id="filter-momento" aria-label="Filtrar por etapa del recorrido">
+              <option value="">Todas</option>
+              <option value="Inscripción de asignaturas">Inscripción de asignaturas</option>
+              <option value="Pago de matrícula">Pago de matrícula</option>
+              <option value="Gestión de certificados">Gestión de certificados</option>
+              <option value="Atención y servicio">Atención y servicio</option>
+              <option value="Experiencia de aprendizaje virtual">Aprendizaje virtual</option>
+              <option value="Proceso de desarrollo">Proceso de desarrollo</option>
+              <option value="Transversal">Transversal</option>
+            </select>
+          </label>
+          <label>
+            Avance de solución
+            <select class="filter-select" id="filter-estado" aria-label="Filtrar por avance de solución">
+              <option value="">Todos</option>
+              <option value="Sin iniciar">Sin iniciar</option>
+              <option value="En curso">En curso</option>
+              <option value="Resuelta">Resuelta</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="control-group order-group">
+          <legend>Ordenar por:</legend>
+          <label>
+            Criterio
+            <select class="filter-select" id="sort-by" aria-label="Ordenar fricciones">
+              <option value="impacto">Impacto: alto a bajo</option>
+              <option value="etapa">Etapa del recorrido</option>
+              <option value="avance">Avance de solución</option>
+              <option value="id">Código original</option>
+            </select>
+          </label>
+          <p class="sort-note" id="sort-note">Orden por defecto: impacto alto a bajo.</p>
+        </fieldset>
+      </div>
+
+      <div class="active-filter-row">
+        <div class="active-filters" id="active-filters" aria-live="polite"></div>
+        <button class="clear-filters" type="button" id="clear-filters">
+          <span class="material-icons-round" aria-hidden="true">restart_alt</span>
+          Ver todas
+        </button>
+      </div>
+    </div>
+
+    <div class="friction-list" id="friction-list" role="list" aria-label="Listado de fricciones"></div>
+
+    <div class="empty-state" id="empty-state" role="status">
+      <div class="empty-icon"><span class="material-icons-round" style="font-size:48px">search_off</span></div>
+      <div class="empty-title">Sin resultados</div>
+      <div class="empty-desc">Prueba quitando algún filtro o usando otros términos de búsqueda.</div>
     </div>
   </section>
 
-  <!-- TOOLBAR -->
-  <div class="toolbar" role="search">
-    <div class="search-wrap">
-      <span class="material-icons-round" aria-hidden="true">search</span>
-      <input
-        type="search"
-        class="search-input"
-        id="search"
-        placeholder="Buscar fricción, plataforma, momento..."
-        aria-label="Buscar fricciones"
-      >
-    </div>
-    <div class="filter-group">
-      <span class="filter-label">Severidad</span>
-      <select class="filter-select" id="filter-severidad" aria-label="Filtrar por severidad">
-        <option value="">Todas</option>
-        <option value="Alta">Alta</option>
-        <option value="Media">Media</option>
-        <option value="Baja">Baja</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <span class="filter-label">Momento</span>
-      <select class="filter-select" id="filter-momento" aria-label="Filtrar por momento">
-        <option value="">Todos</option>
-        <option value="Inscripción de asignaturas">Inscripción</option>
-        <option value="Pago de matrícula">Pago</option>
-        <option value="Gestión de certificados">Certificados</option>
-        <option value="Atención y servicio">Servicio</option>
-        <option value="Experiencia de aprendizaje virtual">Aprendizaje virtual</option>
-        <option value="Proceso de desarrollo">Proceso</option>
-        <option value="Transversal">Transversal</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <span class="filter-label">Estado</span>
-      <select class="filter-select" id="filter-estado" aria-label="Filtrar por estado">
-        <option value="">Todos</option>
-        <option value="Sin iniciar">Sin iniciar</option>
-        <option value="En curso">En curso</option>
-        <option value="Resuelta">Resuelta</option>
-      </select>
-    </div>
-    <span class="results-count" id="results-count" aria-live="polite"></span>
-  </div>
-
-  <!-- LIST -->
-  <div class="friction-list" id="friction-list" role="list" aria-label="Listado de fricciones"></div>
-
-  <!-- EMPTY -->
-  <div class="empty-state" id="empty-state" role="status">
-    <div class="empty-icon"><span class="material-icons-round" style="font-size:48px">search_off</span></div>
-    <div class="empty-title">Sin resultados</div>
-    <div class="empty-desc">Intenta con otros filtros o términos de búsqueda</div>
-  </div>
-
-  <!-- VERSION -->
   <div class="version-bar" role="note">
-    <span class="material-icons-round">info</span>
-    Versión 1.0 · Junio 2026 · 15 fricciones · Fuentes: 8 encuestas (21.829 respuestas) + 1.529 reseñas Google Maps + 7 entrevistas con stakeholders
+    <span class="material-icons-round">verified</span>
+    Versión 1.0 · Junio 2026 · 15 fricciones · Fuentes: 8 encuestas (21.829 respuestas), 1.529 reseñas de Google Maps y 7 entrevistas con stakeholders.
   </div>
-
 </main>
 
 <script src="js/data.js"></script>
