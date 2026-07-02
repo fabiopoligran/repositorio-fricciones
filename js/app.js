@@ -3,11 +3,26 @@ const emptyState = document.getElementById('empty-state');
 const resultsCount = document.getElementById('results-count');
 const activeFilters = document.getElementById('active-filters');
 const clearFiltersBtn = document.getElementById('clear-filters');
-const sortNote = document.getElementById('sort-note');
-
 const impactRank = { Alta: 3, Media: 2, Baja: 1 };
 const statusRank = { 'Sin iniciar': 1, 'En curso': 2, Resuelta: 3 };
 const impactLabels = { Alta: 'Alto', Media: 'Medio', Baja: 'Bajo' };
+function sizeSelectToContent(select) {
+  if (!sizeSelectToContent.canvas) sizeSelectToContent.canvas = document.createElement('canvas');
+  const ctx = sizeSelectToContent.canvas.getContext('2d');
+  const style = getComputedStyle(select);
+  ctx.font = style.fontWeight + ' ' + style.fontSize + ' ' + style.fontFamily;
+  const text = select.options[select.selectedIndex].text;
+  const textWidth = ctx.measureText(text).width;
+  const rightSpace = 26; // debe coincidir con el padding-right de .filter-select-plain
+  const safetyMargin = 4; // evita recortes si la fuente aún no cargó al medir
+  select.style.width = Math.ceil(textWidth) + rightSpace + safetyMargin + 'px';
+}
+
+function sizeAllSelects() {
+  document.querySelectorAll('.filter-select-plain').forEach(sizeSelectToContent);
+}
+
+
 
 function nivelImpactoClass(s) {
   return s === 'Alta' ? 'error' : s === 'Media' ? 'warning' : 'success';
@@ -49,21 +64,59 @@ function buildCard(f) {
     return '<div class="source-item"><span class="material-icons-round">check</span>' + s + '</div>';
   }).join('');
 
+  const insightTypes = {
+  friccion: {
+    label: 'Fricción',
+    icon: 'warning',
+    class: 'type-friccion'
+  },
+  fortaleza: {
+    label: 'Fortaleza',
+    icon: 'verified'
+  },
+  oportunidad: {
+    label: 'Oportunidad',
+    icon: 'lightbulb'
+  },
+  riesgo: {
+    label: 'Riesgo',
+    icon: 'priority_high'
+  },
+  tendencia: {
+    label: 'Tendencia',
+    icon: 'trending_up'
+  }
+};
+
+const type = insightTypes[f.tipo] || insightTypes.friccion;
+
   card.innerHTML = '' +
     '<div class="friction-header" tabindex="0" role="button" aria-expanded="false">' +
-      '<div class="severity-bar ' + f.severidad.toLowerCase() + '" aria-hidden="true"></div>' +
+      
       '<div class="friction-meta">' +
         '<div class="friction-top">' +
+
+          '<div class="insight-category ' + type.class + '">' +
+              '<span class="material-icons-round">' + type.icon + '</span>' +
+              type.label +
+          '</div>' +
+
           '<h3 class="friction-name">' + f.nombre + '</h3>' +
-          '<span class="friction-id">' + f.id + '</span>' +
+
+          '<span class="friction-id">' +
+              f.id + ' · ' + f.momento +
+          '</span>' +
+
+
         '</div>' +
+
         '<div class="friction-tags">' +
           '<span class="badge ' + nivelImpactoClass(f.severidad) + '">' +
             '<span class="material-icons-round">' + nivelImpactoIcon(f.severidad) + '</span>' +
             'Impacto ' + impactLabels[f.severidad].toLowerCase() +
           '</span>' +
           '<span class="badge brand"><span class="material-icons-round">route</span>' + f.momento + '</span>' +
-          '<span class="badge neutral"><span class="material-icons-round">devices</span>' + shortPlatform(f.plataforma) + '</span>' +
+          
           '<span class="badge ' + estadoClass(f.estado) + ' status-badge">' +
             '<span class="material-icons-round">' + estadoIcon(f.estado) + '</span>' +
             'Solución: ' + f.estado +
@@ -77,12 +130,12 @@ function buildCard(f) {
         '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">description</span>Qué ocurre</div><div class="detail-value">' + f.descripcion + '</div></div>' +
         '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">person_alert</span>Impacto en el estudiante</div><div class="detail-value">' + f.impacto + '</div></div>' +
         '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">lightbulb</span>Alternativa de solución</div><div class="detail-value">' + f.solucion + '</div></div>' +
-        '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">source</span>Evidencia disponible</div><div class="sources-list">' + sources + '</div></div>' +
+        '<div class="detail-section"><div class="detail-label"><span class="material-icons-round">source</span>Fuentes de evidencia</div><div class="sources-list">' + sources + '</div></div>' +
       '</div>' +
       '<div class="detail-footer">' +
-        '<div class="footer-item"><span class="footer-item-label">Responsable</span><span class="badge neutral"><span class="material-icons-round" style="font-size:12px">manage_accounts</span>' + f.propietario + '</span></div>' +
+        '<div class="footer-item"><span class="footer-item-label">Responsable</span><span class="badge neutral"><span class="material-icons-round" style="font-size:12px">business</span>' + f.propietario + '</span></div>' +
         '<div class="footer-item"><span class="footer-item-label">Esfuerzo estimado</span><span class="badge ' + esfuerzoClass(f.esfuerzo) + '">' + f.esfuerzo + '</span></div>' +
-        '<div class="footer-item status-control"><span class="footer-item-label">Avance de solución</span>' +
+        '<div class="footer-item status-control"><span class="footer-item-label">Estado de la iniciativa</span>' +
           '<button class="estado-btn active-' + (f.estado === 'Sin iniciar' ? 'sin' : f.estado === 'En curso' ? 'curso' : 'resuelta') + '" data-friction-id="' + f.id + '" aria-label="Cambiar avance de solución de ' + f.nombre + '">' +
             '<span class="material-icons-round" style="font-size:14px">' + estadoIcon(f.estado) + '</span>' + f.estado +
           '</button>' +
@@ -146,33 +199,49 @@ function renderCards() {
 }
 
 function updateActiveFilters() {
+  const activeFilters = document.getElementById('active-filters');
+
   const q = document.getElementById('search').value.trim();
   const sev = document.getElementById('filter-severidad').value;
   const mom = document.getElementById('filter-momento').value;
   const est = document.getElementById('filter-estado').value;
+
   const chips = [];
 
-  if (q) chips.push('Búsqueda: "' + q + '"');
-  if (sev) chips.push('Impacto: ' + impactLabels[sev]);
-  if (mom) chips.push('Etapa: ' + mom);
-  if (est) chips.push('Solución: ' + est);
+  if (q) chips.push({ type: 'search', label: 'Búsqueda: "' + q + '"' });
+  if (sev) chips.push({ type: 'severidad', label: 'Impacto: ' + impactLabels[sev] });
+  if (mom) chips.push({ type: 'momento', label: 'Etapa: ' + mom });
+  if (est) chips.push({ type: 'estado', label: 'Solución: ' + est });
 
-  activeFilters.innerHTML = chips.length
-    ? chips.map(function(chip) { return '<span class="filter-chip">' + chip + '</span>'; }).join('')
+activeFilters.innerHTML = chips.length
+    ? '<span class="filter-group-title">Filtrando por:</span>' + chips.map(function(chip) {
+        return '<span class="filter-chip">' +
+          chip.label +
+          '<button type="button" class="filter-chip-remove" data-filter-type="' + chip.type + '" aria-label="Quitar filtro">' +
+            '<span class="material-icons-round">close</span>' +
+          '</button>' +
+        '</span>';
+      }).join('')
     : '<span class="filter-empty">Sin filtros aplicados</span>';
 
   clearFiltersBtn.disabled = chips.length === 0;
+
+  activeFilters.querySelectorAll('.filter-chip-remove').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      removeFilter(btn.dataset.filterType);
+    });
+  });
 }
 
-function updateSortNote() {
-  const labels = {
-    impacto: 'Orden por defecto: impacto alto a bajo.',
-    etapa: 'Orden actual: etapa del recorrido, de la A a la Z.',
-    avance: 'Orden actual: avance de solución.',
-    id: 'Orden actual: código original del diagnóstico.'
-  };
-  sortNote.textContent = labels[document.getElementById('sort-by').value];
+function removeFilter(type) {
+  if (type === 'search') document.getElementById('search').value = '';
+  if (type === 'severidad') document.getElementById('filter-severidad').value = '';
+  if (type === 'momento') document.getElementById('filter-momento').value = '';
+  if (type === 'estado') document.getElementById('filter-estado').value = '';
+  applyFilters();
 }
+
+
 
 function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase();
@@ -191,10 +260,9 @@ function applyFilters() {
     if (show) visible++;
   });
 
-  resultsCount.textContent = visible + ' fricción' + (visible !== 1 ? 'es' : '');
+  resultsCount.textContent = 'Mostrando ' + visible + ' de ' + frictions.length + ' insight' + (frictions.length !== 1 ? 's' : '');
   emptyState.classList.toggle('visible', visible === 0);
   updateActiveFilters();
-  updateSortNote();
 }
 
 function updateStats() {
@@ -212,14 +280,25 @@ function clearFilters() {
   document.getElementById('filter-severidad').value = '';
   document.getElementById('filter-momento').value = '';
   document.getElementById('filter-estado').value = '';
+  sizeAllSelects();
   applyFilters();
 }
 
 document.getElementById('search').addEventListener('input', applyFilters);
-document.getElementById('filter-severidad').addEventListener('change', applyFilters);
-document.getElementById('filter-momento').addEventListener('change', applyFilters);
-document.getElementById('filter-estado').addEventListener('change', applyFilters);
+document.getElementById('filter-severidad').addEventListener('change', function() {
+  sizeSelectToContent(this);
+  applyFilters();
+});
+document.getElementById('filter-momento').addEventListener('change', function() {
+  sizeSelectToContent(this);
+  applyFilters();
+});
+document.getElementById('filter-estado').addEventListener('change', function() {
+  sizeSelectToContent(this);
+  applyFilters();
+});
 document.getElementById('sort-by').addEventListener('change', function() {
+  sizeSelectToContent(this);
   renderCards();
   applyFilters();
 });
@@ -237,6 +316,35 @@ document.querySelectorAll('[data-quick-filter]').forEach(function(card) {
   });
 });
 
+const aboutTrigger = document.getElementById("aboutTrigger");
+const aboutModal = document.getElementById("aboutModal");
+const closeModal = document.getElementById("closeModal");
+
+aboutTrigger.addEventListener("click", () => {
+    aboutModal.classList.add("open");
+});
+
+closeModal.addEventListener("click", () => {
+    aboutModal.classList.remove("open");
+});
+
+aboutModal.addEventListener("click", (e) => {
+    if (e.target === aboutModal) {
+        aboutModal.classList.remove("open");
+    }
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        aboutModal.classList.remove("open");
+    }
+});
+
 renderCards();
 applyFilters();
 updateStats();
+sizeAllSelects();
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(sizeAllSelects);
+}
