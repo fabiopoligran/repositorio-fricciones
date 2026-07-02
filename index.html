@@ -15,43 +15,32 @@
     <div class="institution-name">Politécnico Grancolombiano</div>
     <div class="institution-unit">Dirección de Experiencia e Inclusión · Vicerrectoría del Estudiante</div>
   </div>
-  <nav class="main-nav" aria-label="Navegación principal">
-    <a class="nav-brand" href="#top" aria-label="Repositorio de Fricciones">
-      <span class="brand-mark" aria-hidden="true">RF</span>
-      <span>
-        <strong>Repositorio de Fricciones</strong>
-        <small>Experiencia Digital</small>
-      </span>
-    </a>
-    <div class="nav-links">
-      <a href="#about">Qué es</a>
-      <a href="#repository">Explorar</a>
-    </div>
-    <span class="version-pill">V 1.0 · Jun 2026</span>
-  </nav>
 </header>
 
 <main class="page" id="top" role="main">
   <section class="intro-section" id="about" aria-labelledby="page-title">
-    <div class="intro-copy">
-      <p class="eyebrow">Sistema Institucional de Gestión de la Experiencia Digital</p>
-      <h1 id="page-title">Fricciones que afectan la experiencia digital del estudiante</h1>
-      <p>
-        Este repositorio reúne hallazgos del diagnóstico institucional para priorizar mejoras,
-        hacer seguimiento a las soluciones y mantener una lectura común entre equipos.
-      </p>
-    </div>
-    <div class="about-panel" aria-label="Cómo usar este repositorio">
-      <div>
-        <span class="material-icons-round" aria-hidden="true">info</span>
-        <strong>Cómo usarlo</strong>
-      </div>
-      <p>
-        Filtra por nivel de impacto, etapa del recorrido o avance de solución. Abre cada fricción
-        para ver evidencia, impacto, alternativa de solución, esfuerzo y equipo responsable.
-      </p>
+    <div class="intro-header">
+        <div class="intro-copy">
+            <h1 id="page-title">
+                Observatorio de Experiencia Digital
+            </h1>
+            <p>
+                Repositorio institucional de insights y evidencia para comprender la experiencia digital,
+                priorizar oportunidades de mejora y orientar la toma de decisiones.
+            </p>
+        </div>
+        <button class="about-link" id="aboutTrigger">
+            <span class="material-icons-round">
+                info
+            </span>
+            ¿Por qué existe este observatorio?
+        </button>
     </div>
   </section>
+
+  <div class="section-heading">
+    <h2>Panorama actual</h2>
+  </div>
 
   <section class="stats-row" aria-label="Resumen y filtros rápidos">
     <button class="stat-card" type="button" data-quick-filter="all" aria-label="Ver todas las fricciones">
@@ -91,83 +80,98 @@
   <section class="repository-section" id="repository" aria-label="Explorar fricciones">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">Explorar repositorio</p>
-        <h2>Fricciones documentadas</h2>
+        <h2>Explorar insights</h2>
       </div>
-      <span class="results-count" id="results-count" aria-live="polite"></span>
     </div>
 
     <div class="controls-panel">
-      <div class="search-wrap">
-        <span class="material-icons-round" aria-hidden="true">search</span>
-        <input
-          type="search"
-          class="search-input"
-          id="search"
-          placeholder="Buscar por fricción, plataforma, etapa o responsable"
-          aria-label="Buscar fricciones"
-        >
-      </div>
 
-      <div class="controls-grid">
-        <fieldset class="control-group">
-          <legend>Filtrar por:</legend>
-          <label>
-            Nivel de impacto
-            <select class="filter-select" id="filter-severidad" aria-label="Filtrar por nivel de impacto">
-              <option value="">Todos</option>
-              <option value="Alta">Alto</option>
-              <option value="Media">Medio</option>
-              <option value="Baja">Bajo</option>
-            </select>
-          </label>
-          <label>
-            Etapa del recorrido
-            <select class="filter-select" id="filter-momento" aria-label="Filtrar por etapa del recorrido">
-              <option value="">Todas</option>
-              <option value="Inscripción de asignaturas">Inscripción de asignaturas</option>
-              <option value="Pago de matrícula">Pago de matrícula</option>
-              <option value="Gestión de certificados">Gestión de certificados</option>
-              <option value="Atención y servicio">Atención y servicio</option>
-              <option value="Experiencia de aprendizaje virtual">Aprendizaje virtual</option>
-              <option value="Proceso de desarrollo">Proceso de desarrollo</option>
-              <option value="Transversal">Transversal</option>
-            </select>
-          </label>
-          <label>
-            Avance de solución
-            <select class="filter-select" id="filter-estado" aria-label="Filtrar por avance de solución">
-              <option value="">Todos</option>
-              <option value="Sin iniciar">Sin iniciar</option>
-              <option value="En curso">En curso</option>
-              <option value="Resuelta">Resuelta</option>
-            </select>
-          </label>
-        </fieldset>
+      <div class="toolbar-top">
+          <div class="search-wrap">
+              <span class="material-icons-round" aria-hidden="true">search</span>
+              <input
+                  type="search"
+                  class="search-input"
+                  id="search"
+                  placeholder="Buscar por fricción, plataforma o responsable"
+                  aria-label="Buscar insights">
+          </div>
+          <div class="toolbar-actions">
+            <span class="filter-group-title">Filtrar por:</span>
+            <div class="filter-field">
+                <label class="filter-field-label" for="filter-severidad">Impacto</label>
+                <select class="filter-select-plain" id="filter-severidad">
+                    <option value="">Todos</option>
+                    <option value="Alta">Alto</option>
+                    <option value="Media">Medio</option>
+                    <option value="Baja">Bajo</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label class="filter-field-label" for="filter-momento">Momento</label>
+                <select class="filter-select-plain" id="filter-momento">
+                    <option value="">Todos</option>
+                    <option value="Inscripción de asignaturas">Inscripción de asignaturas</option>
+                    <option value="Pago de matrícula">Pago de matrícula</option>
+                    <option value="Gestión de certificados">Gestión de certificados</option>
+                    <option value="Atención y servicio">Atención y servicio</option>
+                    <option value="Experiencia de aprendizaje virtual">Aprendizaje virtual</option>
+                    <option value="Proceso de desarrollo">Proceso de desarrollo</option>
+                    <option value="Transversal">Transversal</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label class="filter-field-label" for="filter-estado">Avance</label>
+                <select class="filter-select-plain" id="filter-estado">
+                    <option value="">Todos</option>
+                    <option value="Sin iniciar">Sin iniciar</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Resuelta">Resuelta</option>
+                </select>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="filter-field">
+                <label class="filter-field-label" for="sort-by">Ordenar por</label>
+                <select class="filter-select-plain" id="sort-by">
+                    <option value="impacto">Impacto ↓</option>
+                    <option value="impacto-asc">Impacto ↑</option>
+                    <option value="etapa">Momento</option>
+                    <option value="avance">Avance</option>
+                    <option value="id">Código</option>
+                </select>
+            </div>
 
-        <fieldset class="control-group order-group">
-          <legend>Ordenar por:</legend>
-          <label>
-            Criterio
-            <select class="filter-select" id="sort-by" aria-label="Ordenar fricciones">
-              <option value="impacto">Impacto: alto a bajo</option>
-              <option value="etapa">Etapa del recorrido</option>
-              <option value="avance">Avance de solución</option>
-              <option value="id">Código original</option>
-            </select>
-          </label>
-          <p class="sort-note" id="sort-note">Orden por defecto: impacto alto a bajo.</p>
-        </fieldset>
+          </div>
+
       </div>
 
       <div class="active-filter-row">
-        <div class="active-filters" id="active-filters" aria-live="polite"></div>
-        <button class="clear-filters" type="button" id="clear-filters">
-          <span class="material-icons-round" aria-hidden="true">restart_alt</span>
-          Ver todas
+
+        <div class="active-filter-summary">
+            <span class="results-count" id="results-count" aria-live="polite"></span>
+            <div class="toolbar-divider"></div>
+        </div>
+
+        <div class="active-filters"
+            id="active-filters"
+            aria-live="polite">
+        </div>
+
+        <button class="clear-filters"
+                type="button"
+                id="clear-filters">
+
+            <span class="material-icons-round">
+                restart_alt
+            </span>
+
+            Borrar filtros
+
         </button>
+
       </div>
-    </div>
+
+  </div>
 
     <div class="friction-list" id="friction-list" role="list" aria-label="Listado de fricciones"></div>
 
@@ -183,6 +187,53 @@
     Versión 1.0 · Junio 2026 · 15 fricciones · Fuentes: 8 encuestas (21.829 respuestas), 1.529 reseñas de Google Maps y 7 entrevistas con stakeholders.
   </div>
 </main>
+
+<div class="modal-overlay" id="aboutModal">
+
+    <div class="modal">
+
+        <button class="modal-close" id="closeModal">
+            <span class="material-icons-round">close</span>
+        </button>
+
+        <h2>¿Por qué existe este observatorio?</h2>
+
+        <p>
+            La experiencia digital no depende de una única plataforma ni de un
+            solo proceso. Se construye a través de múltiples interacciones entre
+            estudiantes, docentes, colaboradores, procesos y sistemas.
+        </p>
+
+        <p>
+            Este observatorio integra evidencia proveniente de entrevistas,
+            encuestas, analítica, Google Reviews, documentación institucional y
+            análisis experto para convertir información dispersa en
+            <strong>insights accionables</strong> que apoyen la toma de
+            decisiones.
+        </p>
+
+        <h3>¿Qué encontrarás aquí?</h3>
+
+        <ul>
+            <li>🟥 Fricciones que afectan la experiencia digital.</li>
+            <li>🟩 Fortalezas que conviene preservar.</li>
+            <li>🟦 Oportunidades de mejora.</li>
+            <li>🟨 Riesgos y tendencias emergentes.</li>
+            <li>📊 Evidencia que respalda cada insight.</li>
+        </ul>
+
+        <h3>¿Para qué sirve?</h3>
+
+        <ul>
+            <li>Priorizar iniciativas.</li>
+            <li>Identificar patrones.</li>
+            <li>Compartir conocimiento.</li>
+            <li>Apoyar decisiones institucionales.</li>
+        </ul>
+
+    </div>
+
+</div>
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
