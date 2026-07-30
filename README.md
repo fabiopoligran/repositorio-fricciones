@@ -14,7 +14,7 @@ Un repositorio vivo de las fricciones encontradas en el diagnóstico institucion
 - Tarjetas expandibles con descripción, impacto, fuentes, solución propuesta y propietario
 - Estado editable inline (Sin iniciar → En curso → Resuelta)
 
-**Versión actual:** 1.0 · Junio 2026 · 15 fricciones documentadas
+**Versión actual:** 2.0 · Julio 2026 · 24 fricciones documentadas
 
 **Fuentes del diagnóstico:**
 - 7 entrevistas con stakeholders
