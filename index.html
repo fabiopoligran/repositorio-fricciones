@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Observatorio de Experiencia Digital · Politécnico Grancolombiano</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="institution-bar">
+    <div class="institution-name">Politécnico Grancolombiano</div>
+    <div class="institution-unit">Dirección de Experiencia e Inclusión · Vicerrectoría del Estudiante</div>
+  </div>
+</header>
+
+<main class="page" id="top" role="main">
+  <section class="intro-section" id="about" aria-labelledby="page-title">
+    <div class="intro-header">
+        <div class="intro-copy">
+            <h1 id="page-title">
+                Observatorio de Experiencia Digital
+            </h1>
+            <p>
+                Repositorio institucional de insights y evidencia para comprender la experiencia digital,
+                priorizar oportunidades de mejora y orientar la toma de decisiones.
+            </p>
+        </div>
+        <button class="about-link" id="aboutTrigger">
+            <span class="material-icons-round">
+                info
+            </span>
+            ¿Por qué existe este observatorio?
+        </button>
+    </div>
+  </section>
+
+  <div class="section-heading">
+    <h2>Panorama actual</h2>
+  </div>
+
+  <section class="stats-row" aria-label="Resumen y filtros rápidos">
+    <button class="stat-card" type="button" data-quick-filter="all" aria-label="Ver todos los insights">
+      <div class="stat-icon brand"><span class="material-icons-round">inventory_2</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-total">24</div>
+        <div class="stat-label">Insights identificados</div>
+        <div class="stat-action">Ver todo</div>
+      </div>
+    </button>
+    <button class="stat-card" type="button" data-quick-filter="esfuerzo-alto" aria-label="Filtrar insights de esfuerzo alto">
+      <div class="stat-icon error"><span class="material-icons-round">priority_high</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-esfuerzo-alto">14</div>
+        <div class="stat-label">Esfuerzo alto</div>
+        <div class="stat-action">Filtrar</div>
+      </div>
+    </button>
+    <button class="stat-card" type="button" data-quick-filter="sin-fuentes" aria-label="Filtrar insights sin fuentes de evidencia documentadas">
+      <div class="stat-icon warning"><span class="material-icons-round">source</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-sin-fuentes">21</div>
+        <div class="stat-label">Fuentes por documentar</div>
+        <div class="stat-action">Filtrar</div>
+      </div>
+    </button>
+    <button class="stat-card" type="button" data-quick-filter="sin-prioridad" aria-label="Filtrar insights sin índice de prioridad asignado">
+      <div class="stat-icon warning"><span class="material-icons-round">low_priority</span></div>
+      <div class="stat-info">
+        <div class="stat-value" id="stat-sin-prioridad">24</div>
+        <div class="stat-label">Prioridad por asignar</div>
+        <div class="stat-action">Filtrar</div>
+      </div>
+    </button>
+  </section>
+
+  <section class="repository-section" id="repository" aria-label="Explorar insights">
+    <div class="section-heading">
+      <div>
+        <h2>Explorar insights</h2>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+
+      <div class="toolbar-top">
+          <div class="search-wrap">
+              <span class="material-icons-round" aria-hidden="true">search</span>
+              <input
+                  type="search"
+                  class="search-input"
+                  id="search"
+                  placeholder="Buscar por insight, tema o responsable"
+                  aria-label="Buscar insights">
+          </div>
+          <div class="toolbar-actions">
+            <span class="filter-group-title">Filtrar por:</span>
+            <div class="filter-field">
+                <label class="filter-field-label" for="filter-tema">Tema</label>
+                <select class="filter-select-plain" id="filter-tema">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label class="filter-field-label" for="filter-momento">Punto del journey</label>
+                <select class="filter-select-plain" id="filter-momento">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label class="filter-field-label" for="filter-estado">Estado</label>
+                <select class="filter-select-plain" id="filter-estado">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="filter-field">
+                <label class="filter-field-label" for="sort-by">Ordenar por</label>
+                <select class="filter-select-plain" id="sort-by">
+                    <option value="id">Código</option>
+                    <option value="tema">Tema</option>
+                    <option value="momento">Punto del journey</option>
+                    <option value="esfuerzo">Esfuerzo estimado</option>
+                </select>
+            </div>
+
+          </div>
+
+      </div>
+
+      <div class="active-filter-row">
+
+        <div class="active-filter-summary">
+            <span class="results-count" id="results-count" aria-live="polite"></span>
+            <div class="toolbar-divider"></div>
+        </div>
+
+        <div class="active-filters"
+            id="active-filters"
+            aria-live="polite">
+        </div>
+
+        <button class="clear-filters"
+                type="button"
+                id="clear-filters">
+
+            <span class="material-icons-round">
+                restart_alt
+            </span>
+
+            Borrar filtros
+
+        </button>
+
+      </div>
+
+  </div>
+
+    <div class="friction-list" id="friction-list" role="list" aria-label="Listado de insights"></div>
+
+    <div class="empty-state" id="empty-state" role="status">
+      <div class="empty-icon"><span class="material-icons-round" style="font-size:48px">search_off</span></div>
+      <div class="empty-title">Sin resultados</div>
+      <div class="empty-desc">Prueba quitando algún filtro o usando otros términos de búsqueda.</div>
+    </div>
+  </section>
+
+  <div class="version-bar" role="note">
+    <span class="material-icons-round">verified</span>
+    Versión 2.0 · Julio 2026 · 24 insights · Fuentes: encuestas institucionales, reseñas de Google Maps y entrevistas con stakeholders. El índice de prioridad y las fuentes de evidencia se están completando de forma progresiva.
+  </div>
+</main>
+
+<div class="modal-overlay" id="aboutModal">
+
+    <div class="modal">
+
+        <button class="modal-close" id="closeModal">
+            <span class="material-icons-round">close</span>
+        </button>
+
+        <h2>¿Por qué existe este observatorio?</h2>
+
+        <p>
+            La experiencia digital no depende de una única plataforma ni de un
+            solo proceso. Se construye a través de múltiples interacciones entre
+            estudiantes, docentes, colaboradores, procesos y sistemas.
+        </p>
+
+        <p>
+            Este observatorio integra evidencia proveniente de entrevistas,
+            encuestas, analítica, Google Reviews, documentación institucional y
+            análisis experto para convertir información dispersa en
+            <strong>insights accionables</strong> que apoyen la toma de
+            decisiones.
+        </p>
+
+        <h3>¿Qué encontrarás aquí?</h3>
+
+        <ul>
+            <li>🟥 Fricciones que afectan la experiencia digital.</li>
+            <li>🟩 Fortalezas que conviene preservar.</li>
+            <li>🟦 Oportunidades de mejora.</li>
+            <li>🟨 Riesgos y tendencias emergentes.</li>
+            <li>📊 Evidencia que respalda cada insight.</li>
+        </ul>
+
+        <h3>¿Para qué sirve?</h3>
+
+        <ul>
+            <li>Priorizar iniciativas.</li>
+            <li>Identificar patrones.</li>
+            <li>Compartir conocimiento.</li>
+            <li>Apoyar decisiones institucionales.</li>
+        </ul>
+
+    </div>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
