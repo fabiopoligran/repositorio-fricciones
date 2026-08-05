@@ -180,6 +180,7 @@ function getSortedFrictions() {
     if (sortBy === 'tema') return a.tema.localeCompare(b.tema, 'es') || compareById(a, b);
     if (sortBy === 'momento') return a.momento.localeCompare(b.momento, 'es') || compareById(a, b);
     if (sortBy === 'esfuerzo') return (esfuerzoSortRank[b.esfuerzo] || 0) - (esfuerzoSortRank[a.esfuerzo] || 0) || compareById(a, b);
+    if (sortBy === 'prioridad') return (Number(a.prioridad) || 999) - (Number(b.prioridad) || 999) || compareById(a, b);
     return compareById(a, b);
   });
   return sorted;
