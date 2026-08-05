@@ -21,6 +21,20 @@ function esfuerzoClass(e) {
   const grupo = esfuerzoGroup(e);
   return grupo === 'Alto' ? 'error' : grupo === 'Medio' ? 'warning' : grupo === 'Bajo' ? 'success' : 'neutral';
 }
+// Agrupa el índice de prioridad (1 = más urgente, 24 = menos urgente) en 4 bloques,
+// espejo del "Bloque de prioridad" (Crítico/Alto/Medio/Bajo) usado en el análisis fuente.
+function prioridadGroup(p) {
+  const n = Number(p);
+  if (!p || Number.isNaN(n)) return 'Por definir';
+  if (n <= 6) return 'Crítico';
+  if (n <= 12) return 'Alto';
+  if (n <= 18) return 'Medio';
+  return 'Bajo';
+}
+function prioridadClass(p) {
+  const grupo = prioridadGroup(p);
+  return grupo === 'Crítico' ? 'error' : grupo === 'Alto' ? 'warning' : grupo === 'Medio' ? 'brand' : grupo === 'Bajo' ? 'success' : 'neutral';
+}
 function momentoGroup(m) {
   return m.split(' (')[0];
 }
@@ -104,8 +118,6 @@ function buildCard(f) {
     ? '<div class="detail-value">' + f.fuentes + '</div>'
     : '<div class="detail-value" style="color:var(--pds-color-neutral-500);font-style:italic;">Fuentes de evidencia por documentar.</div>';
 
-  const prioridadLabel = f.prioridad ? f.prioridad : 'Por definir';
-
   card.innerHTML = '' +
     '<div class="friction-header" tabindex="0" role="button" aria-expanded="false">' +
       '<div class="friction-meta">' +
@@ -120,6 +132,7 @@ function buildCard(f) {
           '</span>' +
         '</div>' +
         '<div class="friction-tags">' +
+          '<span class="badge ' + prioridadClass(f.prioridad) + '"><span class="material-icons-round">flag</span>Prioridad ' + (f.prioridad ? '#' + f.prioridad : 'por definir') + '</span>' +
           '<span class="badge brand"><span class="material-icons-round">sell</span>' + f.tema + '</span>' +
           '<span class="badge neutral"><span class="material-icons-round">route</span>' + momentoGroup(f.momento) + '</span>' +
           '<span class="badge ' + estadoClass(f.estado) + '">' +
@@ -140,7 +153,6 @@ function buildCard(f) {
       '<div class="detail-footer">' +
         '<div class="footer-item"><span class="footer-item-label">Responsable</span><span class="badge neutral"><span class="material-icons-round" style="font-size:12px">business</span>' + f.propietario + '</span></div>' +
         '<div class="footer-item"><span class="footer-item-label">Esfuerzo estimado</span><span class="badge ' + esfuerzoClass(f.esfuerzo) + '">' + f.esfuerzo + '</span></div>' +
-        '<div class="footer-item"><span class="footer-item-label">Índice de prioridad</span><span class="badge neutral">' + prioridadLabel + '</span></div>' +
       '</div>' +
     '</div>';
 
